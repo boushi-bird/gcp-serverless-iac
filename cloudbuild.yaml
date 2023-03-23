@@ -1,0 +1,35 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - "--target"
+      - prod
+      - "-t"
+      - "$_CONTAINER_REGISTRY/$_IMAGE_NAME:$SHORT_SHA"
+      - .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - tag
+      - "$_CONTAINER_REGISTRY/$_IMAGE_NAME:$SHORT_SHA"
+      - "$_CONTAINER_REGISTRY/$_IMAGE_NAME:latest"
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - "$_CONTAINER_REGISTRY/$_IMAGE_NAME:$SHORT_SHA"
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - "$_CONTAINER_REGISTRY/$_IMAGE_NAME:latest"
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - run
+      - deploy
+      - $_CLOUD_RUN_SERVICE_NAME
+      - "--image=$_CONTAINER_REGISTRY/$_IMAGE_NAME:$SHORT_SHA"
+      - "--port"
+      # コンテナの公開ポートを指定
+      - "80"
+      - "--region"
+      - $_REGION
+images:
+  - "$_CONTAINER_REGISTRY/$_IMAGE_NAME:$SHORT_SHA"
