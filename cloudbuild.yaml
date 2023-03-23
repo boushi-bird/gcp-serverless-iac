@@ -2,8 +2,6 @@ steps:
   - name: gcr.io/cloud-builders/docker
     args:
       - build
-      - "--target"
-      - prod
       - "-t"
       - "$_CONTAINER_REGISTRY/$_IMAGE_NAME:$SHORT_SHA"
       - .
