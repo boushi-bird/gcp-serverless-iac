@@ -31,3 +31,5 @@ steps:
       - $_REGION
 images:
   - "$_CONTAINER_REGISTRY/$_IMAGE_NAME:$SHORT_SHA"
+options:
+  logging: CLOUD_LOGGING_ONLY
